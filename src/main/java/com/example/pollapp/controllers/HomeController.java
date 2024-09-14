@@ -1,12 +1,28 @@
 package com.example.pollapp.controllers;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class HomeController {
+
     @GetMapping("/")
     public String home() {
-        return "index"; // Returns the name of the view (index.html or home.jsp)
+        return "index"; // returns index.html
+    }
+    
+    @GetMapping("/polls")
+    public String polls() {
+        return "polls"; // returns polls.html
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "about"; // returns users.html
+    }
+
+    @GetMapping("/votes")
+    public String votes() {
+        return "votes"; // returns votes.html
     }
 }
