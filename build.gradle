@@ -42,6 +42,9 @@ dependencies {
     // Mockito support
     testImplementation 'org.mockito:mockito-core'
     testImplementation 'org.mockito:mockito-junit-jupiter'
+
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
 }
 
 tasks.named('test') {

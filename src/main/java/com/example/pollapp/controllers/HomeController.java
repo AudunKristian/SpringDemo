@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
     @GetMapping("/")
     public String home() {
-        return "Welcome to our site"; // Returns the name of the view (home.html or home.jsp)
+        return "index"; // Returns the name of the view (index.html or home.jsp)
     }
 }

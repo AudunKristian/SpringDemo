@@ -21,7 +21,7 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/api/users")
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
@@ -42,4 +42,6 @@ public class UserController {
     public void deleteUser(@PathVariable Long id) {
         userRepository.deleteById(id);
     }
+
+
 }

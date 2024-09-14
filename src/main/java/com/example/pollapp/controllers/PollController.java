@@ -24,13 +24,14 @@ public class PollController {
 
     @PostMapping
     public Poll createPoll(@RequestParam String question,
-                           @RequestParam Instant publishedAt,
-                           @RequestParam Instant validUntil,
-                           @RequestParam Boolean isPublic,
-                           @RequestParam Long creatorId,
-                           @RequestParam List<String> options) {
-        return pollManager.createPoll(question, publishedAt, validUntil, isPublic, creatorId, options);
-    }
+                       @RequestParam Instant publishedAt,
+                       @RequestParam Instant validUntil,
+                       @RequestParam Boolean isPublic,
+                       @RequestParam Long creatorId,
+                       @RequestParam List<String> options) {
+    return pollManager.createPoll(question, publishedAt, validUntil, isPublic, creatorId, options);
+}
+
 
     @GetMapping("/{id}")
     public Poll getPollById(@PathVariable Long id) {

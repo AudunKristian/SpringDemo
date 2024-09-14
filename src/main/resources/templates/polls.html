@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Polls</title>
+    <link rel="stylesheet" href="/styles/style.css">
+</head>
+<body>
+    <h1>Available Polls</h1>
+    <ul id="polls-list">
+        <!-- Polls will be loaded here by JavaScript -->
+    </ul>
+    <script>
+        fetch('/api/polls')
+            .then(response => response.json())
+            .then(polls => {
+                const list = document.getElementById('polls-list');
+                polls.forEach(poll => {
+                    const item = document.createElement('li');
+                    item.textContent = poll.question;
+                    list.appendChild(item);
+                });
+            });
+    </script>
+</body>
+</html>
