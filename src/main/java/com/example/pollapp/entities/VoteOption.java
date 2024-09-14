@@ -1,5 +1,4 @@
-package com.example.demo;
-
+package com.example.pollapp.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
