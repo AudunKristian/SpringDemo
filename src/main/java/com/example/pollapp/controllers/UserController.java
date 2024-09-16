@@ -22,7 +22,7 @@ public class UserController {
         return userRepository.findAll();
     }
 
-    @PostMapping("/api/users")
+    @PostMapping
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
     }
