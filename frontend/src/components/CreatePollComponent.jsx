@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './css/createPollComponent.css';
 
 const CreatePollComponent = () => {
   const [question, setQuestion] = useState('');

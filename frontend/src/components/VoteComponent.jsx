@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import './css/VoteComponent.css';
+
 
 const VoteComponent = () => {
   const [polls, setPolls] = useState([]);
