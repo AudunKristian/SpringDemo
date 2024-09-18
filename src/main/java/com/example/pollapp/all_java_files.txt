@@ -1,0 +1,513 @@
+File: PollAppApplication.java
+package com.example.pollapp;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class PollAppApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(PollAppApplication.class, args);
+    }
+}
+
+--------------------------------------------------------------------------------
+File: ServerPortListener.java
+package com.example.pollapp;
+
+import org.springframework.boot.web.context.WebServerApplicationContext;
+import org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.boot.web.context.WebServerInitializedEvent;
+import org.springframework.stereotype.Component;
+
+@Component
+public class ServerPortListener implements ApplicationListener<WebServerInitializedEvent> {
+    @Override
+    public void onApplicationEvent(WebServerInitializedEvent event) {
+        WebServerApplicationContext webServerAppCtx = event.getApplicationContext();
+        System.out.println("Application is running on port: " + webServerAppCtx.getWebServer().getPort());
+    }
+
+}
+
+--------------------------------------------------------------------------------
+File: HomeController.java
+package com.example.pollapp.controllers;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+
+@CrossOrigin(origins = "*")
+@Controller
+public class HomeController {
+
+    @GetMapping("/")
+    public String home() {
+        return "index"; // returns index.html
+    }
+    
+    @GetMapping("/polls")
+    public String polls() {
+        return "polls"; // returns polls.html
+    }
+
+    @GetMapping("/about")
+    public String about() {
+        return "about"; // returns users.html
+    }
+
+    @GetMapping("/votes")
+    public String votes() {
+        return "votes"; // returns votes.html
+    }
+}
+
+--------------------------------------------------------------------------------
+File: PollController.java
+package com.example.pollapp.controllers;
+
+import com.example.pollapp.entities.Poll;
+import com.example.pollapp.services.PollManager;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Instant;
+import java.util.List;
+
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("/api/polls")
+public class PollController {
+
+    private final PollManager pollManager;
+
+    public PollController(PollManager pollManager) {
+        this.pollManager = pollManager;
+    }
+
+    @GetMapping
+    public List<Poll> getAllPolls() {
+        return pollManager.getAllPolls();
+    }
+
+    @PostMapping
+    public Poll createPoll(@RequestParam String question,
+                       @RequestParam Instant publishedAt,
+                       @RequestParam Instant validUntil,
+                       @RequestParam Boolean isPublic,
+                       @RequestParam Long creatorId,
+                       @RequestParam List<String> options) {
+    return pollManager.createPoll(question, publishedAt, validUntil, isPublic, creatorId, options);
+}
+
+
+    @GetMapping("/{id}")
+    public Poll getPollById(@PathVariable Long id) {
+        return pollManager.getPollById(id).orElseThrow(() -> new RuntimeException("Poll not found"));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deletePoll(@PathVariable Long id) {
+        pollManager.deletePoll(id);
+    }
+}
+
+--------------------------------------------------------------------------------
+File: UserController.java
+package com.example.pollapp.controllers;
+
+import com.example.pollapp.entities.User;
+import com.example.pollapp.repositories.UserRepository;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@CrossOrigin(origins = "*")
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    private final UserRepository userRepository;
+
+    public UserController(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
+
+    @GetMapping
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @PostMapping
+    public User createUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
+    @PutMapping("/{id}")
+    public User updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        return userRepository.findById(id)
+                .map(user -> {
+                    user.setUsername(updatedUser.getUsername());
+                    user.setEmail(updatedUser.getEmail());
+                    user.setPassword(updatedUser.getPassword());
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        userRepository.deleteById(id);
+    }
+
+
+}
+
+--------------------------------------------------------------------------------
+File: Poll.java
+package com.example.pollapp.entities;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.Instant;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Poll {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String question;
+
+    private Instant publishedAt;
+
+    private Instant validUntil;
+
+    private Boolean isPublic;
+
+    @ManyToOne
+    @JoinColumn(name = "creator_id")
+    private User creator;
+
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL)
+    private List<VoteOption> voteOptions;
+
+    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL)
+    private List<Vote> votes;
+
+    public Poll(String question, Instant publishedAt, Instant validUntil, Boolean isPublic, User creator) {
+        this.question = question;
+        this.publishedAt = publishedAt;
+        this.validUntil = validUntil;
+        this.isPublic = isPublic;
+        this.creator = creator;
+    }
+}
+
+--------------------------------------------------------------------------------
+File: User.java
+package com.example.pollapp.entities;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import jakarta.persistence.*;
+import java.util.List;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+@Table(name = "app_user") 
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+    private String email;
+    private String password;
+
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL)
+    private List<Poll> polls;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Vote> votes;
+
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+}
+
+--------------------------------------------------------------------------------
+File: Vote.java
+package com.example.pollapp.entities;
+
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import java.time.Instant;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class Vote {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private Instant publishedAt;
+
+    @ManyToOne
+    @JoinColumn(name = "vote_option_id")
+    private VoteOption voteOption;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "poll_id")
+    private Poll poll;
+
+    public Vote(Instant publishedAt, VoteOption voteOption, User user, Poll poll) {
+        this.publishedAt = publishedAt;
+        this.voteOption = voteOption;
+        this.user = user;
+        this.poll = poll;
+    }
+}
+
+--------------------------------------------------------------------------------
+File: VoteOption.java
+package com.example.pollapp.entities;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Entity
+@Getter
+@Setter
+@NoArgsConstructor
+public class VoteOption {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String caption;
+
+    private int presentationOrder;
+
+    @ManyToOne
+    @JoinColumn(name = "poll_id")
+    private Poll poll;
+
+    public VoteOption(String caption, int presentationOrder, Poll poll) {
+        this.caption = caption;
+        this.presentationOrder = presentationOrder;
+        this.poll = poll;
+    }
+}
+
+--------------------------------------------------------------------------------
+File: PollRepository.java
+package com.example.pollapp.repositories;
+
+import com.example.pollapp.entities.Poll;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PollRepository extends JpaRepository<Poll, Long> {
+}
+
+--------------------------------------------------------------------------------
+File: UserRepository.java
+package com.example.pollapp.repositories;
+
+import com.example.pollapp.entities.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+}
+
+--------------------------------------------------------------------------------
+File: VoteOptionRepository.java
+package com.example.pollapp.repositories;
+
+import com.example.pollapp.entities.VoteOption;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface VoteOptionRepository extends JpaRepository<VoteOption, Long> {
+}
+
+--------------------------------------------------------------------------------
+File: VoteRepository.java
+package com.example.pollapp.repositories;
+
+import com.example.pollapp.entities.Poll;
+import com.example.pollapp.entities.User;
+import com.example.pollapp.entities.Vote;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface VoteRepository extends JpaRepository<Vote, Long> {
+    
+    // Finds all votes for a specific poll
+    List<Vote> findByPoll(Poll poll);
+
+    // Finds votes by poll and user, used for checking if the user has already voted
+    List<Vote> findByPollAndUser(Poll poll, User user);
+
+    // Finds all votes for a specific poll by poll ID
+    List<Vote> findByPollId(Long pollId);
+}
+
+--------------------------------------------------------------------------------
+File: PollManager.java
+package com.example.pollapp.services;
+
+import com.example.pollapp.entities.*;
+import com.example.pollapp.repositories.*;
+
+import org.springframework.stereotype.Service;
+
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+public class PollManager {
+
+    private final PollRepository pollRepository;
+    private final UserRepository userRepository;
+    private final VoteRepository voteRepository;
+    private final VoteOptionRepository voteOptionRepository;
+
+    public PollManager(PollRepository pollRepository, UserRepository userRepository, 
+                       VoteRepository voteRepository, VoteOptionRepository voteOptionRepository) {
+        this.pollRepository = pollRepository;
+        this.userRepository = userRepository;
+        this.voteRepository = voteRepository;
+        this.voteOptionRepository = voteOptionRepository;
+    }
+
+    /**
+     * Creates a new poll
+     */
+    public Poll createPoll(String question, Instant publishedAt, Instant validUntil, Boolean isPublic, Long userId, List<String> options) {
+        Optional<User> creator = userRepository.findById(userId);
+
+        if (creator.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        Poll poll = new Poll(question, publishedAt, validUntil, isPublic, creator.get());
+        poll = pollRepository.save(poll);
+
+        // Create VoteOptions and associate them with the poll
+        for (int i = 0; i < options.size(); i++) {
+            String optionText = options.get(i);
+            VoteOption voteOption = new VoteOption(optionText, i, poll);
+            voteOptionRepository.save(voteOption);
+        }
+
+        return poll;
+    }
+
+    /**
+     * Allows a user to vote on a poll
+     */
+    public Vote vote(Long pollId, Long userId, Long voteOptionId) {
+        Optional<Poll> pollOptional = pollRepository.findById(pollId);
+        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<VoteOption> voteOptionOptional = voteOptionRepository.findById(voteOptionId);
+
+        if (pollOptional.isEmpty()) {
+            throw new RuntimeException("Poll not found");
+        }
+
+        if (userOptional.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+
+        if (voteOptionOptional.isEmpty() || !voteOptionOptional.get().getPoll().getId().equals(pollId)) {
+            throw new RuntimeException("Invalid vote option");
+        }
+
+        Poll poll = pollOptional.get();
+        User user = userOptional.get();
+        VoteOption voteOption = voteOptionOptional.get();
+
+        // Check if the poll is active
+        Instant now = Instant.now();
+        if (now.isBefore(poll.getPublishedAt()) || now.isAfter(poll.getValidUntil())) {
+            throw new RuntimeException("Poll is not active");
+        }
+
+        // For private polls, check if the user has already voted
+        if (!poll.getIsPublic()) {
+            List<Vote> existingVotes = voteRepository.findByPollAndUser(poll, user);
+            if (!existingVotes.isEmpty()) {
+                throw new RuntimeException("User has already voted in this private poll");
+            }
+        }
+
+        // Save the vote
+        Vote vote = new Vote(now, voteOption, user, poll);
+        return voteRepository.save(vote);
+    }
+
+    /**
+     * Fetches all polls
+     */
+    public List<Poll> getAllPolls() {
+        return pollRepository.findAll();
+    }
+
+    /**
+     * Fetches a specific poll by its ID
+     */
+    public Optional<Poll> getPollById(Long pollId) {
+        return pollRepository.findById(pollId);
+    }
+
+    /**
+     * Fetches all votes for a specific poll
+     */
+    public List<Vote> getVotesForPoll(Long pollId) {
+        return voteRepository.findByPollId(pollId);
+    }
+
+    /**
+     * Deletes a poll
+     */
+    public void deletePoll(Long pollId) {
+        pollRepository.deleteById(pollId);
+    }
+}
+
+--------------------------------------------------------------------------------

@@ -25,8 +25,8 @@ for file_name, content in java_files_content.items():
     print("\n" + "-" * 80 + "\n")
 
 # If you want to save all the content to a single file, uncomment this part:
-# with open(os.path.join(directory, "all_java_files.txt"), "w", encoding="utf-8") as output_file:
-#     for file_name, content in java_files_content.items():
-#         output_file.write(f"File: {file_name}\n")
-#         output_file.write(content)
-#         output_file.write("\n" + "-" * 80 + "\n")
+with open(os.path.join(directory, "all_java_files.txt"), "w", encoding="utf-8") as output_file:
+    for file_name, content in java_files_content.items():
+        output_file.write(f"File: {file_name}\n")
+        output_file.write(content)
+        output_file.write("\n" + "-" * 80 + "\n")
