@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.util.List;
 
 public class PollRequest {
+
     private String question;
     private Instant publishedAt;
     private Instant validUntil;
@@ -11,52 +12,31 @@ public class PollRequest {
     private Long creatorId;
     private List<String> options;
 
-    getQuestion() {
+    // Getters 
+    public String getQuestion() {
         return question;
     }
 
-    setQuestion(String question) {
-        this.question = question;
-    }
-
-    getPublishedAt() {
+    public Instant getPublishedAt() {
         return publishedAt;
     }
 
-    setPublishedAt(Instant publishedAt) {
-        this.publishedAt = publishedAt;
-    }
-
-    getValidUntil() {
+    public Instant getValidUntil() {
         return validUntil;
     }
 
-    setValidUntil(Instant validUntil) {
-        this.validUntil = validUntil;
-    }
-
-    getIsPublic() {
+    public Boolean getIsPublic() {
         return isPublic;
     }
 
-    setIsPublic(Boolean isPublic) {
-        this.isPublic = isPublic;
-    }
-
-    getCreatorId() {
+    public Long getCreatorId() {
         return creatorId;
     }
 
-    setCreatorId(Long creatorId) {
-        this.creatorId = creatorId;
-    }
-
-    getOptions() {
+    public List<String> getOptions() {
         return options;
     }
 
-    setOptions(List<String> options) {
-        this.options = options;
-    }
-
+    // Setters (optional, if you want to create request objects manually)
+    // ...
 }

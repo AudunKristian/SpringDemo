@@ -27,10 +27,15 @@ public class PollController {
 
     @PostMapping
     public Poll createPoll(@RequestBody PollRequest pollRequest) {
-        return pollManager.createPoll(pollRequest.getQuestion(), pollRequest.getPublishedAt(),
-                                  pollRequest.getValidUntil(), pollRequest.getIsPublic(),
-                                  pollRequest.getCreatorId(), pollRequest.getOptions());
-    }
+        return pollManager.createPoll(
+            pollRequest.getQuestion(),
+            pollRequest.getPublishedAt(),
+            pollRequest.getValidUntil(),
+            pollRequest.getIsPublic(),
+            pollRequest.getCreatorId(),
+            pollRequest.getOptions()
+        );
+}
 
 
     @GetMapping("/{id}")

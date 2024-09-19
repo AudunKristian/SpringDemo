@@ -118,4 +118,12 @@ public class PollManager {
     public void deletePoll(Long pollId) {
         pollRepository.deleteById(pollId);
     }
+
+    /**
+     * Deletes a vote
+     */
+    public void deleteVote(Long voteId) {
+        voteRepository.deleteById(voteId);
+    }
+
 }
