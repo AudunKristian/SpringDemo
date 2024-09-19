@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './css/CreatePollComponent.css';
 
-const CreatePollComponent = () => {
+const CreatePollComponent = ({ addPoll }) => {
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState(['']);
   const [message, setMessage] = useState('');
@@ -24,6 +24,7 @@ const CreatePollComponent = () => {
     })
     .then(response => response.json())
     .then(data => {
+      addPoll(data); // Add the new poll to the state
       setMessage('Poll created successfully');
       setError('');
       setQuestion('');

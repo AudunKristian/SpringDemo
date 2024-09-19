@@ -21,7 +21,7 @@ const VoteComponent = () => {
       alert('Please select a poll and an option');
       return;
     }
-    fetch(`http://localhost:5173/api/polls/${selectedPoll}/vote`, {
+    fetch(`http://localhost:8080/api/polls/${selectedPoll}/vote`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ option: selectedOption }),
@@ -58,7 +58,7 @@ const VoteComponent = () => {
             onChange={(e) => setSelectedOption(e.target.value)}
           >
             {polls.find(poll => poll.id === selectedPoll)?.options.map((option, index) => (
-              <option key={index} value={option}>{option}</option>
+              <option key={`${selectedPoll}-${index}`} value={option}>{option}</option>
             ))}
           </select>
         </label>

@@ -3,9 +3,11 @@ package com.example.pollapp.controllers;
 import com.example.pollapp.entities.Poll;
 import com.example.pollapp.services.PollManager;
 import org.springframework.web.bind.annotation.*;
+import com.example.pollapp.requests.PollRequest;
 
 import java.time.Instant;
 import java.util.List;
+
 
 @CrossOrigin(origins = "*")
 @RestController
@@ -24,14 +26,11 @@ public class PollController {
     }
 
     @PostMapping
-    public Poll createPoll(@RequestParam String question,
-                       @RequestParam Instant publishedAt,
-                       @RequestParam Instant validUntil,
-                       @RequestParam Boolean isPublic,
-                       @RequestParam Long creatorId,
-                       @RequestParam List<String> options) {
-    return pollManager.createPoll(question, publishedAt, validUntil, isPublic, creatorId, options);
-}
+    public Poll createPoll(@RequestBody PollRequest pollRequest) {
+        return pollManager.createPoll(pollRequest.getQuestion(), pollRequest.getPublishedAt(),
+                                  pollRequest.getValidUntil(), pollRequest.getIsPublic(),
+                                  pollRequest.getCreatorId(), pollRequest.getOptions());
+    }
 
 
     @GetMapping("/{id}")

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './css/CreateUserComponent.css';
 
-const CreateUserComponent = () => {
+const CreateUserComponent = ({ addUser }) => {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -15,6 +15,7 @@ const CreateUserComponent = () => {
     })
     .then(response => response.json())
     .then(data => {
+      addUser(data); // Add the new user to the state
       setMessage('User created successfully');
       setError('');
       setUsername(''); // Clear the input field
