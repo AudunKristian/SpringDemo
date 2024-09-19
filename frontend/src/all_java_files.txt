@@ -1,18 +1,37 @@
 File: App.jsx
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import CreateUserComponent from './components/CreateUserComponent';
 import CreatePollComponent from './components/CreatePollComponent';
 import VoteComponent from './components/VoteComponent';
 import './App.css';
 
 function App() {
+  const [polls, setPolls] = useState([]);
+  const [users, setUsers] = useState([]);
+
+  // Fetch polls initially
+  useEffect(() => {
+    fetch('http://localhost:8080/api/polls')
+      .then(response => response.json())
+      .then(data => setPolls(data))
+      .catch(error => console.error('Failed to fetch polls:', error));
+  }, []);
+
+  const addPoll = (newPoll) => {
+    setPolls(prevPolls => [...prevPolls, newPoll]);
+  };
+
+  const addUser = (newUser) => {
+    setUsers(prevUsers => [...prevUsers, newUser]);
+  };
+
   return (
     <div className="App">
       <header className="App-header">
         <h1>Poll Application</h1>
-        <CreateUserComponent />
-        <CreatePollComponent />
-        <VoteComponent />
+        <CreateUserComponent addUser={addUser} />
+        <CreatePollComponent addPoll={addPoll} />
+        <VoteComponent polls={polls} />
       </header>
     </div>
   );
@@ -80,7 +99,7 @@ File: CreatePollComponent.jsx
 import React, { useState } from 'react';
 import './css/CreatePollComponent.css';
 
-const CreatePollComponent = () => {
+const CreatePollComponent = ({ addPoll }) => {
   const [question, setQuestion] = useState('');
   const [options, setOptions] = useState(['']);
   const [message, setMessage] = useState('');
@@ -103,6 +122,7 @@ const CreatePollComponent = () => {
     })
     .then(response => response.json())
     .then(data => {
+      addPoll(data); // Add the new poll to the state
       setMessage('Poll created successfully');
       setError('');
       setQuestion('');
@@ -151,7 +171,7 @@ File: CreateUserComponent.jsx
 import React, { useState } from 'react';
 import './css/CreateUserComponent.css';
 
-const CreateUserComponent = () => {
+const CreateUserComponent = ({ addUser }) => {
   const [username, setUsername] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
@@ -165,6 +185,7 @@ const CreateUserComponent = () => {
     })
     .then(response => response.json())
     .then(data => {
+      addUser(data); // Add the new user to the state
       setMessage('User created successfully');
       setError('');
       setUsername(''); // Clear the input field
@@ -258,7 +279,7 @@ const VoteComponent = () => {
             onChange={(e) => setSelectedOption(e.target.value)}
           >
             {polls.find(poll => poll.id === selectedPoll)?.options.map((option, index) => (
-              <option key={index} value={option}>{option}</option>
+              <option key={`${selectedPoll}-${index}`} value={option}>{option}</option>
             ))}
           </select>
         </label>

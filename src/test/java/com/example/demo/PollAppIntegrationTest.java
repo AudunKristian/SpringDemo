@@ -34,37 +34,32 @@ public class PollAppIntegrationTest {
     private PollManager pollManager;
 
     @Test
-    public void testCreateUser() throws Exception {
+    public void testFullScenario() throws Exception {
+        // Step 1: Create a new user
         mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"username\": \"user1\", \"email\": \"user1@example.com\", \"password\": \"password123\" }"))
                 .andExpect(status().isCreated());
-    }
 
-    @Test
-    public void testListAllUsers() throws Exception {
+        // Step 2: List all users (should show the newly created user)
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].username").value("user1"));
 
-    @Test
-    public void testCreateAnotherUser() throws Exception {
+        // Step 3: Create another user
         mockMvc.perform(post("/api/users")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"username\": \"user2\", \"email\": \"user2@example.com\", \"password\": \"password123\" }"))
                 .andExpect(status().isCreated());
-    }
 
-    @Test
-    public void testListAllUsersAgain() throws Exception {
+        // Step 4: List all users again (should show two users)
         mockMvc.perform(get("/api/users"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[1].username").value("user2"));
 
-    @Test
-    public void testCreatePoll() throws Exception {
+        // Step 5: User 1 creates a new poll
         User mockUser = new User("user1", "user1@example.com", "password123");
         Poll mockPoll = new Poll("What is your favorite color?",
                 Instant.parse("2024-09-16T00:00:00Z"),
@@ -82,50 +77,39 @@ public class PollAppIntegrationTest {
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.question").value("What is your favorite color?"))
                 .andExpect(jsonPath("$.creator.username").value("user1"));
-    }
 
-    @Test
-    public void testListPolls() throws Exception {
+        // Step 6: List polls (should show the new poll)
         mockMvc.perform(get("/api/polls"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].question").value("What is your favorite color?"));
 
-    @Test
-    public void testUserVotesOnPoll() throws Exception {
+        // Step 7: User 2 votes on the poll
         mockMvc.perform(post("/api/votes")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"pollId\": 1, \"userId\": 2, \"voteOptionId\": 1 }"))
                 .andExpect(status().isCreated());
-    }
 
-    @Test
-    public void testUserChangesVote() throws Exception {
+        // Step 8: User 2 changes his vote
         mockMvc.perform(put("/api/votes/{voteId}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{ \"voteOptionId\": 2 }"))
                 .andExpect(status().isOk());
-    }
 
-    @Test
-    public void testListVotes() throws Exception {
+        // Step 9: List votes (should show the most recent vote for User 2)
         mockMvc.perform(get("/api/votes?pollId=1"))
                 .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON));
-    }
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$[0].voteOptionId").value(2));
 
-    @Test
-    public void testDeletePoll() throws Exception {
+        // Step 10: Delete the one poll
         mockMvc.perform(delete("/api/polls/{pollId}", 1))
                 .andExpect(status().isNoContent());
-    }
 
-    @Test
-    public void testListVotesAfterDelete() throws Exception {
+        // Step 11: List votes (should be empty)
         mockMvc.perform(get("/api/votes?pollId=1"))
                 .andExpect(status().isOk())
                 .andExpect(content().json("[]")); // Expecting an empty list
     }
 }
-
 */

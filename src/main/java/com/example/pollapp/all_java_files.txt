@@ -33,6 +33,31 @@ public class ServerPortListener implements ApplicationListener<WebServerInitiali
 }
 
 --------------------------------------------------------------------------------
+File: WebConfig.java
+package com.example.pollapp.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.lang.NonNull;
+
+@Configuration
+public class WebConfig {
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(@NonNull CorsRegistry registry) {
+                registry.addMapping("/**")
+                        .allowedOrigins("http://localhost:5173") // Frontend URL
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
+            }
+        };
+    }
+}
+--------------------------------------------------------------------------------
 File: HomeController.java
 package com.example.pollapp.controllers;
 
@@ -70,47 +95,48 @@ File: PollController.java
 package com.example.pollapp.controllers;
 
 import com.example.pollapp.entities.Poll;
-import com.example.pollapp.services.PollManager;
+import com.example.pollapp.repositories.PollRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.time.Instant;
 import java.util.List;
+import java.util.Optional;
 
 @CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/polls")
 public class PollController {
 
-    private final PollManager pollManager;
-
-    public PollController(PollManager pollManager) {
-        this.pollManager = pollManager;
-    }
+    @Autowired
+    private PollRepository pollRepository;
 
     @GetMapping
     public List<Poll> getAllPolls() {
-        return pollManager.getAllPolls();
+        return pollRepository.findAll();
+    }
+
+    @GetMapping("/{id}")
+    public Optional<Poll> getPollById(@PathVariable Long id) {
+        return pollRepository.findById(id);
     }
 
     @PostMapping
-    public Poll createPoll(@RequestParam String question,
-                       @RequestParam Instant publishedAt,
-                       @RequestParam Instant validUntil,
-                       @RequestParam Boolean isPublic,
-                       @RequestParam Long creatorId,
-                       @RequestParam List<String> options) {
-    return pollManager.createPoll(question, publishedAt, validUntil, isPublic, creatorId, options);
-}
+    public Poll createPoll(@RequestBody Poll poll) {
+        return pollRepository.save(poll);
+    }
 
-
-    @GetMapping("/{id}")
-    public Poll getPollById(@PathVariable Long id) {
-        return pollManager.getPollById(id).orElseThrow(() -> new RuntimeException("Poll not found"));
+    @PutMapping("/{id}")
+    public Poll updatePoll(@PathVariable Long id, @RequestBody Poll pollDetails) {
+        Poll poll = pollRepository.findById(id).orElseThrow(() -> new RuntimeException("Poll not found"));
+        poll.setQuestion(pollDetails.getQuestion());
+        poll.setPublishedAt(pollDetails.getPublishedAt());
+        poll.setValidUntil(pollDetails.getValidUntil());
+        poll.setIsPublic(pollDetails.getIsPublic());
+        return pollRepository.save(poll);
     }
 
     @DeleteMapping("/{id}")
     public void deletePoll(@PathVariable Long id) {
-        pollManager.deletePoll(id);
+        pollRepository.deleteById(id);
     }
 }
 
@@ -387,6 +413,51 @@ public interface VoteRepository extends JpaRepository<Vote, Long> {
 }
 
 --------------------------------------------------------------------------------
+File: PollRequest.java
+package com.example.pollapp.requests;
+
+import java.time.Instant;
+import java.util.List;
+
+public class PollRequest {
+
+    private String question;
+    private Instant publishedAt;
+    private Instant validUntil;
+    private Boolean isPublic;
+    private Long creatorId;
+    private List<String> options;
+
+    // Getters 
+    public String getQuestion() {
+        return question;
+    }
+
+    public Instant getPublishedAt() {
+        return publishedAt;
+    }
+
+    public Instant getValidUntil() {
+        return validUntil;
+    }
+
+    public Boolean getIsPublic() {
+        return isPublic;
+    }
+
+    public Long getCreatorId() {
+        return creatorId;
+    }
+
+    public List<String> getOptions() {
+        return options;
+    }
+
+    // Setters (optional, if you want to create request objects manually)
+    // ...
+}
+
+--------------------------------------------------------------------------------
 File: PollManager.java
 package com.example.pollapp.services;
 
@@ -508,6 +579,15 @@ public class PollManager {
     public void deletePoll(Long pollId) {
         pollRepository.deleteById(pollId);
     }
+
+    /**
+     * Deletes a vote
+     */
+    public void deleteVote(Long voteId) {
+        voteRepository.deleteById(voteId);
+    }
+
+
 }
 
 --------------------------------------------------------------------------------
