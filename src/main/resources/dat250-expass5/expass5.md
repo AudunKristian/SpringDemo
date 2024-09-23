@@ -10,7 +10,7 @@ To solve these tasks I used MongoSH together with Mongo Compass. For some of the
 
 
 #Verification of the MongoDB Compass
-![Image 0](./Pictures/HashVerificationVerification.png)
+![Image 0](./Pictures/HashVerification.png)
 * The powershell that was run was checkMongoDBHash.ps1, which is located in the same folder as this one. The location of the file was in the download folder, so the script will not work from this repository. 
 
 ## Screenshots from Experiment 1, Crud Operations:
