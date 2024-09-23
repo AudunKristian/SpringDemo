@@ -9,8 +9,10 @@ To solve these tasks I used MongoSH together with Mongo Compass. For some of the
 * It took some tries to be able to run the verification of the hash of the MongoDB installation file. I solved the task by creating a powershell script which I ran in powershell. I finally got correct output when I saw that I had a small typo in one of the filenames. I tried also different options like gitBash and wsl. 
 
 
-#Verification of the MongoDB Compass
+## Verification of the MongoDB Compass
+
 ![Image 0](./Pictures/HashVerification.png)
+
 * The powershell that was run was checkMongoDBHash.ps1, which is located in the same folder as this one. The location of the file was in the download folder, so the script will not work from this repository. 
 
 ## Screenshots from Experiment 1, Crud Operations:
