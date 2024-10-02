@@ -1,3 +1,4 @@
+package dat250expass6;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -29,7 +30,7 @@ public class Worker {
             channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
         }
     };
-    channel.basicConsume(TASK_QUEUE_NAME, true, deliverCallback, consumerTag -> { });
+    channel.basicConsume(TASK_QUEUE_NAME, false, deliverCallback, consumerTag -> { });
   }
 
   private static void doWork(String task) {
