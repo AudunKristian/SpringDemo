@@ -3,7 +3,7 @@
 ## Explanation 
 During the tasks and the installation I got some help from ChatGPT when I was stuck. The tutorials were good, so I managed to find solutions to the problems that occured. Underneath are some screenshots from Experiment 2-4. 
 
-## Experminet 2 - Hello world
+## Experiment 2 - Hello world
 
 In this task I made a producer and a consumer of messages. 
 
