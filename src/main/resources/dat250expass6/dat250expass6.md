@@ -10,7 +10,7 @@ In this task I made a producer and a consumer of messages.
 Terminal output:
 ![HelloWorld.png](Pictures/HelloWorld.png)
 
-## Experminet 3 - Work Queues
+## Experiment 3 - Work Queues
 
 In this task we have multiple consumers, which reads messages in turn. 
 
