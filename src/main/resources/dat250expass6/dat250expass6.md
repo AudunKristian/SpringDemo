@@ -1,7 +1,7 @@
 # Assignment 6
 
 ## Explanation 
-During the tasks and the installation I got some help from ChatGPT when I was stuck. The tutorials were good, so I managed to find solutions to the problems that occured. Underneath are some screenshots from Experiment 2-4. 
+During the tasks and the installation I got some help from ChatGPT when I was stuck. The tutorials were good, so I managed to find solutions to the problems that occured. Underneath are some screenshots from Experiment 2-4. The code is in the same directory as this one. 
 
 ## Experiment 2 - Hello world
 
@@ -9,6 +9,10 @@ In this task I made a producer and a consumer of messages.
 
 Terminal output:
 ![HelloWorld.png](Pictures/HelloWorld.png)
+
+Code: 
+[Producer (Send.java)](Send.java)
+[Consumer (Recv.java)](Recv.java)
 
 ## Experiment 3 - Work Queues
 
@@ -22,6 +26,10 @@ Terminal 2 consumer:
 
 Terminal 3 consumer: Does the tasks that are not shown in terminal 2.
 
+Code: 
+[Producer (NewTask.java)](NewTask.java)
+[Consumer (Worker.java)](Worker.java)
+
 ## Experiment 4 - Topics
 
 In this task we are seeing how to organize messages in exchanges. In our case consumers see all messages within the exchange.
@@ -32,6 +40,9 @@ Terminal output:
 We also list the bindings in the terminal, which makes us able to verify that the code actually creates code and queues as we want.
 ![list_queuesCommand.png](Pictures/list_queuesCommand.png)
 
+Code: 
+[Producer (EmitLog.java)](EmitLog.java)
+[Consumer (ReceiveLogs.java)](ReceiveLogs.java)
 
 ## Challenges
 * In the beginning it was challenging to set up the producer and consumera correctly, so that they interracted correctly. I troubleshooted together with ChatGPT, and one of the errors was that java was not set up correctly. I reorganized the file structure to resolve compilation issues. 
