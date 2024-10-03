@@ -24,7 +24,7 @@ Usage:
 """
 
 # Directory where your PNG files are located
-directory = 'Pictures'
+directory = 'src/main/resources/dat250expass6/Pictures'
 
 # Output Markdown file
 output_md_file = 'output.md'

@@ -1,0 +1,5 @@
+![HelloWorld.png](src/main/resources/dat250expass6/Pictures\HelloWorld.png)
+![Messages.png](src/main/resources/dat250expass6/Pictures\Messages.png)
+![WorkersDoingTasksFinal.png](src/main/resources/dat250expass6/Pictures\WorkersDoingTasksFinal.png)
+![LogScreenshot.png](src/main/resources/dat250expass6/Pictures\LogScreenshot.png)
+![list_queuesCommand.png](src/main/resources/dat250expass6/Pictures\list_queuesCommand.png)

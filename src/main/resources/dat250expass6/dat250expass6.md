@@ -8,7 +8,7 @@ During the tasks and the installation I got some help from ChatGPT when I was st
 In this task I made a producer and a consumer of messages. 
 
 Terminal output:
-![HelloWorld.png](Pictures\HelloWorld.png)
+![HelloWorld.png](Pictures/HelloWorld.png)
 
 ## Experminet 3 - Work Queues
 
