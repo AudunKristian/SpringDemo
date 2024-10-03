@@ -1,7 +1,0 @@
-![HelloWorld.png](Pictures\HelloWorld.png)
-![Messages.png](Pictures\Messages.png)
-![WorkersDoingTasks.png](Pictures\WorkersDoingTasks.png)
-![WorkersDoingTasksFinal.png](Pictures\WorkersDoingTasksFinal.png)
-![LogScreenshot.png](Pictures\LogScreenshot.png)
-![LogTextFile.png](Pictures\LogTextFile.png)
-![list_queuesCommand.png](Pictures\list_queuesCommand.png)
