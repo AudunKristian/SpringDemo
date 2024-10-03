@@ -36,3 +36,6 @@ We also list the bindings in the terminal, which makes us able to verify that th
 ## Challenges
 * In the beginning it was challenging to set up the producer and consumera correctly, so that they interracted correctly. I troubleshooted together with ChatGPT, and one of the errors was that java was not set up correctly. I reorganized the file structure to resolve compilation issues. 
 * I also had running the rabbitmqtl list_bindings command. I solved this problem by making sure that two erlang cookie-files were matched. These have to do with authentication of commands in the terminal.
+
+## Completion
+* I managed to solve all the parts of the assignment.
