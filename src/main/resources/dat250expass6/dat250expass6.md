@@ -15,10 +15,10 @@ Terminal output:
 In this task we have multiple consumers, which reads messages in turn. 
 
 Terminal 1 producer:
-![Messages.png](Pictures\Messages.png)
+![Messages.png](Pictures/Messages.png)
 
 Terminal 2 consumer:
-![WorkersDoingTasksFinal.png](Pictures\WorkersDoingTasksFinal.png)
+![WorkersDoingTasksFinal.png](Pictures/WorkersDoingTasksFinal.png)
 
 Terminal 3 consumer: Does the tasks that are not shown in terminal 2.
 
@@ -27,10 +27,10 @@ Terminal 3 consumer: Does the tasks that are not shown in terminal 2.
 In this task we are seeing how to organize messages in exchanges. In our case consumers see all messages within the exchange.
 
 Terminal output:
-![LogScreenshot.png](Pictures\LogScreenshot.png)
+![LogScreenshot.png](Pictures/LogScreenshot.png)
 
 We also list the bindings in the terminal, which makes us able to verify that the code actually creates code and queues as we want.
-![list_queuesCommand.png](Pictures\list_queuesCommand.png)
+![list_queuesCommand.png](Pictures/list_queuesCommand.png)
 
 
 ## Challenges
