@@ -17,6 +17,11 @@ repositories {
 	mavenCentral()
 }
 
+tasks.withType(JavaCompile) {
+    sourceCompatibility = '21'
+    targetCompatibility = '21'
+}
+
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
